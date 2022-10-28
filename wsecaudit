@@ -1,0 +1,15 @@
+#!/bin/bash
+
+P=/opt/lynis
+F=/var/log/wsecaudit.log
+
+cd /opt
+git clone https://github.com/CISOfy/lynis.git > /dev/null 2>&1
+
+cd $F
+sh lynis audit system > /dev/null
+echo -e "# --- Warnings:\n" | tee -a $F
+cat /var/log/lynis-report.dat | grep warning | sed -e 's/warning\[\]\=//g' | tee -a $F
+
+echo -e "# --- Suggestions:\n" | tee -a $F
+cat /var/log/lynis-report.dat | grep suggestion | sed -e 's/suggestion\[\]\=//g' | tee -a $F
